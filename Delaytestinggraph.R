@@ -1,0 +1,5 @@
+Prob_delay <-c(0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
+Ten_tests_infections<-c(91.506, 91.068, 89.446, 91.722, 94.398, 95.766, 95.26, 95.478, 98.288, 97.530, 101.762, 105.710, 104.954, 108.828, 114.74, 120.084, 124.886, 132.502, 143.802, 156.634, 169.036, 198.076, 233.802)
+Twenty_tests_infections<-c(84.902, 84.486, 84.164, 84.510, 85.776, 83.822, 86.846, 86.170, 87.826, 88.300, 90.108, 92.83, 95.456, 97.896, 97.202, 103.564, 108.3, 113.98, 122.036, 135.34, 151.584, 178.052, 215.85)
+plot(Prob_delay,Ten_tests_infections, type="l",xlab= "Probability of a person delaying by a day", ylab = "Infected individuals", main="Infected individuals against probability of delaying for symptomatic testing" )
+lines(Prob_delay, Twenty_tests_infections, col=3)
