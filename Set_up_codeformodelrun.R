@@ -1,6 +1,5 @@
-#rm(list=ls())
-setwd('/Users/bethanyheath/OneDrive/bethany/PhD/Pan_Code_4')
-#source('../Code/functions_network.R')
+#setwd('')
+setwd('/Users/bethanyheath/OneDrive/bethany/PhD/Code for submission')
 library(igraph)
 library(truncnorm)
 library(infotheo)
@@ -22,23 +21,14 @@ library(rBeta2009)
 
 
 ## build network ###############################################################
-`%ni%` <- Negate(`%in%`)
-
-
-
 #source('Network_set.R')
-#eligible_first_person <- sapply(contact_of_contact_list,length)>10
-
+`%ni%` <- Negate(`%in%`)
 
 ## functions #######################################################
 
-source('network_functions9.R')
-source('evaluation_functions.R')
-
-`%ni%` <- Negate(`%in%`)
+source('random_individual_testing_function.R')
 
 ref_recruit_day <<- 30
-observed <<- 0.8
 eval_day <<- 25
 target_weight <<- 24
 ve_est_threshold <<- 0.005
@@ -52,12 +42,8 @@ covid_spread_wrapper <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,isola
   ##!! a subset of i_nodes are nonsymptomatic and therefore continue to infect contacts. these should be a fixed list, not sampled randomly every time.
   current_infectious <- c(i_nodes_info[,1],e_nodes_info[e_nodes_info[,2]>=e_nodes_info[,3],1])
   available_infectors <- current_infectious[current_infectious %ni% isolation_individuals]
-  #print( current_infectious %ni% isolation_individuals)
   non_isolating <- current_infectious %ni% isolation_individuals
-  #print(non_isolating)
   available_infectors <- current_infectious[non_isolating]
-  #print(available_infectors)
-  #print(available_infectors)
   if(length(available_infectors)>0){
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,available_infectors,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=nonrandom_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
@@ -65,11 +51,7 @@ covid_spread_wrapper <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,isola
     s_nodes[e_nodes_info[,1]] <- 0
   }
   #i infects house - changing code so that only those that have tested positive - currently have that testing occurs every day
-  #print(current_infectious)
-  #print(available_infectors)
-  #print(isolation_individuals)
   infected_and_isolated <- current_infectious[current_infectious %in% isolation_individuals]
-  #print(infected_and_isolated)
   if(length(isolation_individuals)>0){
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info, infected_and_isolated,direct_VE,incperiod_shape,incperiod_rate,susc_list=household_list,beta_scalar=nonrandom_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
@@ -84,18 +66,17 @@ covid_spread_wrapper_2 <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,iso
   # e infects house and work and anyone - only enodes infected one day ago or more, and only enodes with one day left incubating
   ##!! a subset of i_nodes are nonsymptomatic and therefore continue to infect contacts. these should be a fixed list, not sampled randomly every time.
   current_infectious <- c(i_nodes_info[,1],e_nodes_info[e_nodes_info[,2]>=e_nodes_info[,3],1])
-  #`%!in%` <- Negate(`%in%`)
-  #available_infectors <- current_infectious[current_infectious %!in% isolation_individuals]
   if(length(current_infectious)>0){
-    e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=nonrandom_scalar)
-    s_nodes[e_nodes_info[,1]] <- 0
+ #   e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=nonrandom_scalar)
+#    s_nodes[e_nodes_info[,1]] <- 0
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=random_list,beta_scalar=random_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=social_list,beta_scalar=nonrandom_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
   }
   #i infects house - changing code so that only those that have tested positive - currently have that testing occurs every day
-  if(length(isolation_individuals)>0){
+  infected_and_isolated <- current_infectious[current_infectious %in% isolation_individuals]
+  if(length(infected_and_isolated)>0){
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,isolation_individuals,direct_VE,incperiod_shape,incperiod_rate,susc_list=household_list,beta_scalar=0.2)
   }
   return(e_nodes_info)
@@ -139,8 +120,6 @@ length(E(new_g))
 length(E(random_g))
 direct_VE <- 0.0
 
-#enrolled_per_contact <<- enrollment_rate*mean(sapply(contact_of_contact_list,length)[eligible_first_person])
-
 g <<- new_g
 
 g_name <<- as.numeric(as.vector(V(g)$name))
@@ -179,28 +158,66 @@ set_variables_from_gamma_distributions <- function(){
 set_variables_from_gamma_distributions()
 
 #### Additional code ####
-#my_log60 <- file("my_log2020.txt")
-nIter <- 500
+nIter <- 20
 e_order <- list()
-data_collected = matrix (nrow = length(nIter), ncol = 2)
-infected_13<- isolated_5 <- c()
+infected_1<-infected_1<-length_1<-no_peaks_1<- peak_1<-isolated_1<-unneccesary_infections1<-threshold_11 <-threshold_21 <- matrix(nrow = 1, ncol=1)
+sdinfected_1<-sdinfected_1<-sdlength_1<-sdno_peaks_1<- sdpeak_1<-sdisolated_1<-sdunneccesary_infections1<-sdthreshold_11 <-sdthreshold_21 <-matrix(nrow =1, ncol=1)
+#data_collected = matrix (nrow = length(nIter), ncol = 2)
+infected_2<- isolated_2<- peak_2<-length_2<-no_peaks_2 <-unneccesary_infections <- threshold_2<-threshold_1<-c()
 #profvis(
-for(iter in 1:nIter){
-  ## select random person to start
-  first_infected <- sample(g_name, 20)
-  inf_period <- rgamma(length(first_infected),shape=infperiod_shape,rate=infperiod_rate)
-  netwk <- simulate_contact_network(first_infected,start_day=iter,from_source=0,cluster_flag=0,individual_recruitment_times=T,spread_wrapper=covid_spread_wrapper, 
-                                    prob_false_neg = 0.267, non_compliance_prob=0, tests=10, pool_size=5, pools_every_time = 5)
-  results_list[[iter]] <- netwk[[1]]
-  cluster_size[iter] <- netwk[[2]]
-  infected_13[iter] <- netwk[[11]]
-  isolated_5[iter] <- netwk[[12]]
-  #recruit_times[iter] <- netwk[[3]]
-  e_order[[iter]] <- netwk[[8]][!duplicated(netwk[[8]])]
-  #sink(my_log60, append=TRUE, type="output")
-  #data_collected[iter, 1] = netwk[[11]]
-  #data_collected[iter, 2] = netwk[[12]]
-  #print(data_collected)
-} 
- 
+
+delay_prob_range <-c(1)
+other_symps_range <-c(5)
+
+for (i in delay_prob_range){
+ for (j in other_symps_range){
+   for (iter in 1:nIter){
+     observed <<- 0.3
+# select random person to start
+     first_infected <- sample(g_name, 20)
+     inf_period <- rgamma(length(first_infected),shape=infperiod_shape,rate=infperiod_rate)
+     netwk <- simulate_contact_network(first_infected,start_day=iter,from_source=0,cluster_flag=0,individual_recruitment_times=T,spread_wrapper=covid_spread_wrapper,
+                                       prob_false_neg = 0.279, tests=20,
+                                       non_compliance_prob =0, 
+
+
+     )
+
+     results_list[[iter]] <- netwk[[1]]
+     cluster_size[iter] <- netwk[[2]]
+     peak_2[iter] <- netwk[[10]]
+     infected_2[iter] <- netwk[[11]]
+     isolated_2[iter] <- netwk[[12]]
+     length_2[iter] <- netwk[[13]]
+     no_peaks_2[iter] <- netwk[[14]]
+     unneccesary_infections[iter]<-netwk[[17]]
+     threshold_1[iter] <-netwk[[15]]
+     threshold_2[iter] <-netwk[[16]]
+#recruit_times[iter] <- netwk[[3]]
+#    e_order[[iter]] <- netwk[[8]][!duplicated(netwk[[8]])]
+#data_collected[iter, 1] = netwk[[11]]
+#data_collected[iter, 2] = netwk[[12]]
+   }
+
+    infected_1[which(delay_prob_range==i),which(other_symps_range==j)]<- mean(infected_2)
+    sdinfected_1[which(delay_prob_range==i),which(other_symps_range==j)] <-sd(infected_2)
+    length_1[which(delay_prob_range==i),which(other_symps_range==j)]<-mean(length_2)
+    sdlength_1[which(delay_prob_range==i),which(other_symps_range==j)]<- sd(length_2)
+    no_peaks_1[which(delay_prob_range==i),which(other_symps_range==j)]<- mean(no_peaks_2)
+    sdno_peaks_1[which(delay_prob_range==i),which(other_symps_range==j)]<-sd(no_peaks_2)
+    peak_1[which(delay_prob_range==i),which(other_symps_range==j)] <- mean(peak_2)
+    sdpeak_1[which(delay_prob_range==i),which(other_symps_range==j)]<- sd(peak_2)
+    isolated_1[which(delay_prob_range==i),which(other_symps_range==j)]<- mean(isolated_2)
+    sdisolated_1[which(delay_prob_range==i),which(other_symps_range==j)] <- sd(isolated_2)
+    unneccesary_infections1[which(delay_prob_range==i),which(other_symps_range==j)] <- mean(unneccesary_infections)
+    sdunneccesary_infections1[which(delay_prob_range==i),which(other_symps_range==j)]<- sd(unneccesary_infections)
+    threshold_11[which(delay_prob_range==i),which(other_symps_range==j)] <- mean(threshold_1)
+    sdthreshold_11[which(delay_prob_range==i),which(other_symps_range==j)] <- sd(threshold_1)
+    threshold_21[which(delay_prob_range==i),which(other_symps_range==j)] <- mean(threshold_2)
+    sdthreshold_21[which(delay_prob_range==i),which(other_symps_range==j)]<- sd(threshold_2)
+    print(infected_1)
+  }
+}
+
+
 

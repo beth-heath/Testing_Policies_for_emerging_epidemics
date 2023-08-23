@@ -1,4 +1,4 @@
-#20 tests for poolls with 5 division pools
+#Symptomatic testing scheme code
 ## extracted from hitchings
 infect_contacts <- function(potential_contacts,beta_value){
   num_neighbours_susc <- length(potential_contacts)
@@ -16,7 +16,7 @@ infect_contacts <- function(potential_contacts,beta_value){
   return(infectees_susc)
 }
 
-infect_from_source <- function( s_nodes, v_nodes, e_nodes_info, direct_VE,incperiod_shape, incperiod_rate,rate_from_source){
+infect_from_source <- function(s_nodes, v_nodes, e_nodes_info, direct_VE,incperiod_shape, incperiod_rate,rate_from_source){
   # identify susceptibles
   infectees_susc <- c()
   s_hr_l <- s_nodes==1
@@ -176,30 +176,21 @@ recover <- function(e_nodes_info,i_nodes_info, infperiod_shape,infperiod_rate,cl
   }
   infected_persons <- i_nodes_info[,1][i_nodes_info[,2] > 0 ]
   #print(funique(infected_persons))
-  # testing_people <- sample(g_name, 100, replace=F)
-  # names_of <- infected_persons[infected_persons %in% testing_people]
+ # testing_people <- sample(g_name, 100, replace=F)
+ # names_of <- infected_persons[infected_persons %in% testing_people]
   list(e_nodes_info, i_nodes_info, newremoved, newinfectious, infected_persons)
 }
 
-ebola_spread_wrapper <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,direct_VE){
-  # to contacts
-  current_infectious <- i_nodes_info[,1]
-  if(length(current_infectious)>0){
-    e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=1)
-    s_nodes[e_nodes_info[,1]] <- 0
-    e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=hr_and_hh_list,beta_scalar=high_risk_scalar-1)
-    s_nodes[e_nodes_info[,1]] <- 0
-    e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_of_contact_list,beta_scalar=neighbour_scalar)
-  }
-  return(e_nodes_info)
-}
 
 simulate_contact_network <- function(first_infected,individual_recruitment_times=F,end_time=31,start_day=0,from_source=0,cluster_flag=0,allocation_ratio=0.5,
-                                     direct_VE=0,base_rate=0,spread_wrapper=covid_spread_wrapper, spread_wrapper_2 = covid_spread_wrapper_2, prob_false_neg, pool_size,non_compliance_prob){
+                                     direct_VE=0,base_rate=0, spread_wrapper=covid_spread_wrapper, spread_wrapper_2 = covid_spread_wrapper_2, prob_false_neg,
+                                     tests, delay_prob, non_compliance_prob, proportion_of_individuals_with_symptoms){
   # set up info to store
   `%ni%` <- Negate(`%in%`)
   non_compliers <- sample(g_name, length(g_name)*non_compliance_prob, replace = F )
   trajectories <- list()
+  over_point<-0
+  over_point_1<-0
   trajectories$S <- length(vertices) - 1
   trajectories$E <- 0
   trajectories$I <- 0
@@ -213,12 +204,17 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   s_nodes <- rep(1,length(g_name))
   r_nodes <- rep(0,length(g_name))
   t_nodes <- rep(0,length(g_name))
-  z_nodes <- rep(0, length(g_name))
   q_nodes <- rep(0,length(g_name))
-  p_nodes <- rep(0, length(g_name))
   q_nodes_info <- rep(0, length(g_name))
+  z_nodes <- rep(0, length(g_name))
+  f_nodes <- rep(0, length(g_name))
+  w_nodes <- rep(0, length(g_name))
+  w_nodes_info <-rep(0, length(g_name))
   
   # generate info for index case
+  #inc_time <- incperiod_const + rgamma(length(first_infected),shape=incperiod_shape,rate=incperiod_rate)
+  #ceil_inc_time <- ceiling(inc_time)
+  #i_nodes_info <- rbind(i_nodes_info,c(first_infected,rep(0,length(first_infected)),inf_time,inc_time))
   inc_time <- incperiod_const + rgamma(length(first_infected),shape=incperiod_shape,rate=incperiod_rate)
   ceil_inc_time <- ceiling(inc_time)
   #i_nodes_info <- rbind(i_nodes_info,c(first_infected,rep(0,length(first_infected)),inf_time,inc_time))
@@ -233,7 +229,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   results <- matrix(nrow=0,ncol=5)#c(first_infected,0,-inc_time,NA),nrow=1)
   numinfectious <- 1
   ##!! add in additional infectious people?
-  
+ 
   # identify contacts of index case
   contacts_1 <- contact_list[first_infected[1]]
   contacts_2 <-contact_list[first_infected[2]]
@@ -255,21 +251,9 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   contacts_18 <-contact_list[first_infected[18]]
   contacts_19 <-contact_list[first_infected[19]]
   contacts_20 <-contact_list[first_infected[20]]
-  #contacts_21 <- contact_list[first_infected[21]]
-  #contacts_22 <-contact_list[first_infected[22]]
-  #contacts_23 <-contact_list[first_infected[23]]
-  #contacts_24 <-contact_list[first_infected[24]]
-  #contacts_25 <-contact_list[first_infected[25]]
-  #contacts_26 <- contact_list[first_infected[26]]
-  #contacts_28 <- contact_list[first_infected[28]]
-  #contacts_27 <- contact_list[first_infected[27]]
-  #contacts_29 <- contact_list[first_infected[29]]
-  #contacts_30 <- contact_list[first_infected[30]]
-  
-  #contacts <-funique(c(contacts_1, contacts_2, contacts_3, contacts_4, contacts_5, contacts_6, contacts_7, contacts_8, contacts_9, contacts_10, contacts_11, contacts_12, contacts_13, contacts_14, contacts_15, contacts_16, contacts_17, contacts_18, contacts_19, contacts_20, contacts_21, contacts_22, contacts_23, contacts_24, contacts_25))
+
   contacts <-funique(c(contacts_1, contacts_2, contacts_3, contacts_4, contacts_5, contacts_6, contacts_7, contacts_8, contacts_9, contacts_10, contacts_11, contacts_12, contacts_13, contacts_14, contacts_15, contacts_16, contacts_17, contacts_18, contacts_19, contacts_20))
-  #contacts <-funique(c(contacts_1, contacts_2))
-  #contacts <- contacts[contacts!=first_infected]
+
   order_infected <- first_infected
   ## identify high-risk people
   ##!! all household members are high risk. 
@@ -297,18 +281,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   contacts_of_contacts_18 <- contact_of_contact_list[first_infected[18]]
   contacts_of_contacts_19 <- contact_of_contact_list[first_infected[19]]
   contacts_of_contacts_20 <- contact_of_contact_list[first_infected[20]]
-  #contacts_of_contacts_21 <- contact_of_contact_list[first_infected[21]]
-  #contacts_of_contacts_22 <- contact_of_contact_list[first_infected[22]]
-  #contacts_of_contacts_23 <- contact_of_contact_list[first_infected[23]]
-  #contacts_of_contacts_24 <- contact_of_contact_list[first_infected[24]]
-  #contacts_of_contacts_25 <- contact_of_contact_list[first_infected[25]]
-  #contacts_of_contacts_26 <- contact_of_contact_list[first_infected[26]]
-  #contacts_of_contacts_27 <- contact_of_contact_list[first_infected[27]]
-  #contacts_of_contacts_28 <- contact_of_contact_list[first_infected[28]]
-  #contacts_of_contacts_29 <- contact_of_contact_list[first_infected[29]]
-  #contacts_of_contacts_30 <- contact_of_contact_list[first_infected[30]]
-  
-  #contacts_of_contacts <- contacts_of_contacts[contacts_of_contacts!=first_infected]
+
   
   
   ## add households of high-risk contacts to contacts of contacts
@@ -317,15 +290,10 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   #  contacts_of_contacts <- c(contacts_of_contacts,household_list[[hr]])
   #high_risk <- c(high_risk,household_list[[first_infected]])
   
-  #contacts_of_contacts <-funique(c(contacts_of_contacts_1, contacts_of_contacts_2, contacts_of_contacts_3, contacts_of_contacts_4, contacts_of_contacts_5, contacts_of_contacts_6, contacts_of_contacts_7, contacts_of_contacts_8, contacts_of_contacts_9, contacts_of_contacts_10, contacts_of_contacts_11, contacts_of_contacts_12, contacts_of_contacts_13, contacts_of_contacts_14, contacts_of_contacts_15, contacts_of_contacts_16, contacts_of_contacts_17, contacts_of_contacts_18, contacts_of_contacts_19, contacts_of_contacts_20, contacts_of_contacts_21, contacts_of_contacts_22, contacts_of_contacts_23, contacts_of_contacts_24, contacts_of_contacts_25))
   contacts_of_contacts <-funique(c(contacts_of_contacts_1, contacts_of_contacts_2, contacts_of_contacts_3, contacts_of_contacts_4, contacts_of_contacts_5, contacts_of_contacts_6, contacts_of_contacts_7, contacts_of_contacts_8, contacts_of_contacts_9, contacts_of_contacts_10, contacts_of_contacts_11, contacts_of_contacts_12, contacts_of_contacts_13, contacts_of_contacts_14, contacts_of_contacts_15, contacts_of_contacts_16, contacts_of_contacts_17, contacts_of_contacts_18, contacts_of_contacts_19, contacts_of_contacts_20))
-  #contacts_of_contacts <-funique(c(contacts_of_contacts_1, contacts_of_contacts_2))
-  #contacts_of_contacts <-funique(c(contacts_of_contacts_1, contacts_of_contacts_2))
-  
   cluster_people <- unlist(funique(c(contacts,contacts_of_contacts)))
-  #print(cluster_people)
   cluster_people_index <- g_name%in%cluster_people
-  
+ 
   
   
   # enroll trial participants
@@ -353,6 +321,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   # roll epidemic forward one day at a time
   #sim_time <- recruitment_time + end_time + ceil_inc_time
   sim_time <- 500
+  report <- rep(0,500)
   
   positive = matrix(nrow = sim_time, ncol = length(g_name))
   
@@ -362,9 +331,9 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       developed <- vaccine_incubation_times<=time_step-recruitment_times[trial_participants%in%vaccinees]
       v_nodes[vaccinees[developed]] <- 1
     }
-    
-    
-    
+
+
+
     
     # update everyone's internal clock
     newinfectious <- newremoved <- c()
@@ -380,269 +349,132 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       newinfectious <- rec_list[[4]]
       e_nodes[newinfectious] <- 0
       i_nodes[newinfectious] <- 1
-      infected_persons <- rec_list[[5]]
+      infected_persons <- g_name[i_nodes==1]
+      infected <- g_name[i_nodes==1]
+      exposed <- g_name[e_nodes ==1]
+      all <- c(exposed, infected)
+      ##For those who are infected with symptoms
+      infected_indivi <- c(i_nodes_info[i_nodes_info[,5]==1,1])
+    
+      ##For those who are also displaying symptoms
+       other_individuals_with_symptom <- rep(0,length(g_name))
       
-      
-      
-      
-      #print(length(infected_persons))
-      
-      non_isol <- g_name[q_nodes == 0]
-      non_isolating <- non_isol[non_isol %ni% non_compliers]
-      
-      pool_1 <- sample(non_isolating, pool_size, replace=F)
-      g_name_1 <- non_isolating[non_isolating %ni% pool_1]
-      pool_2 <- sample(g_name_1, pool_size, replace=F)
-      g_name_2 <- g_name_1[g_name_1 %ni% pool_2]
-      pool_3 <- sample(g_name_2, pool_size, replace=F)
-      g_name_3 <- g_name_2[g_name_2 %ni% pool_3]
-      pool_4 <- sample(g_name_3, pool_size, replace=F)
-      g_name_4 <- g_name_3[g_name_3 %ni% pool_4]
-      pool_5 <- sample(g_name_4, pool_size, replace=F)
-      g_name_5 <- g_name_4[g_name_4 %ni% pool_5]
-      pool_6 <- sample(g_name_5, pool_size, replace=F)
-      g_name_6 <- g_name_5[g_name_5 %ni% pool_6]
-      pool_7 <- sample(g_name_6, pool_size, replace=F)
-      g_name_7 <- g_name_6[g_name_6 %ni% pool_7]
-      pool_8 <- sample(g_name_7, pool_size, replace=F)
-      g_name_8 <- g_name_7[g_name_7 %ni% pool_8]
-      pool_9 <- sample(g_name_8, pool_size, replace=F)
-      g_name_9 <- g_name_8[g_name_8 %ni% pool_9]
-      pool_10 <- sample(g_name_9, pool_size, replace=F)
-      g_name_10 <- g_name_9[g_name_9 %ni% pool_10]
-      pool_11 <- sample(g_name_10, pool_size, replace=F)
-      g_name_11 <- g_name_10[g_name_10 %ni% pool_11]
-      pool_12 <- sample(g_name_11, pool_size, replace=F)
-      g_name_12 <- g_name_11[g_name_11 %ni% pool_12]
-      pool_13 <- sample(g_name_12, pool_size, replace=F)
-      g_name_13 <- g_name_12[g_name_12 %ni% pool_13]
-      pool_14 <- sample(g_name_13, pool_size, replace=F)
-      g_name_14 <- g_name_13[g_name_13 %ni% pool_14]
-      pool_15 <- sample(g_name_14, pool_size, replace=F)
-      g_name_15 <- g_name_14[g_name_14 %ni% pool_15]
-      pool_16 <- sample(g_name_15, pool_size, replace=F)
-      g_name_16 <- g_name_15[g_name_15 %ni% pool_16]
-      pool_17 <- sample(g_name_16, pool_size, replace=F)
-      g_name_17 <- g_name_16[g_name_16 %ni% pool_17]
-      pool_18 <- sample(g_name_17, pool_size, replace=F)
-      g_name_18 <- g_name_17[g_name_17 %ni% pool_18]
-      pool_19 <- sample(g_name_18, pool_size, replace=F)
-      g_name_19 <- g_name_18[g_name_18 %ni% pool_19]
-      pool_20 <- sample(g_name_19, pool_size, replace=F)
-      g_name_20 <- g_name_19[g_name_19 %ni% pool_20]
-      pool_21 <- sample(g_name_20, pool_size, replace=F)
-      g_name_21 <- g_name_20[g_name_20 %ni% pool_21]
-      pool_22 <- sample(g_name_21, pool_size, replace=F)
-      g_name_22 <- g_name_21[g_name_21 %ni% pool_22]
-      pool_23 <- sample(g_name_22, pool_size, replace=F)
-      g_name_23 <- g_name_22[g_name_22 %ni% pool_23]
-      pool_24 <- sample(g_name_23, pool_size, replace=F)
-      g_name_24 <- g_name_23[g_name_23 %ni% pool_24]
-      pool_25 <- sample(g_name_24, pool_size, replace=F)
-      g_name_25 <- g_name_24[g_name_24 %ni% pool_25]
-      
-      
-      pooled_positive <- g_name[p_nodes == 1]
-      
-      
-      if (length(pooled_positive) > 20){
-        testing_pool <- sample(pooled_positive, 20, replace = F)
-        p_nodes[testing_pool] <- 0 
-        positive_testing <- infected_persons[infected_persons %in% testing_pool]
-        negative_testing <- testing_pool[testing_pool %ni% positive_testing]
-        q_nodes[negative_testing] <- 0 
-      } else if (length(pooled_positive) == 20){
-        p_nodes[pooled_positive] <- 0 
-        pos_test <- infected_persons[infected_persons %in% pooled_positive]
-        neg_test <- pooled_positive[pooled_positive %ni% pos_test]
-        q_nodes[neg_test] <- 0
-      }else if (length(pooled_positive) == 10){
-        p_nodes[pooled_positive] <- 0 
-        pos_test <- infected_persons[infected_persons %in% pooled_positive]
-        neg_test <- pooled_positive[pooled_positive %ni% pos_test]
-        q_nodes[neg_test] <- 0
-        infected_pool_1 <- infected_persons[infected_persons %in% pool_1]
-        if (length(infected_pool_1) != 0){
-          p_nodes[pool_1] <- 1
-          q_nodes[pool_1] <- 1
-        }
-        infected_pool_2 <- infected_persons[infected_persons %in% pool_2]
-        if (length(infected_pool_2) != 0){
-          p_nodes[pool_2] <- 1
-          q_nodes[pool_2] <- 1
-        }
-        infected_pool_3 <- infected_persons[infected_persons %in% pool_3]
-        if (length(infected_pool_3) != 0){
-          p_nodes[pool_3] <- 1
-          q_nodes[pool_3] <- 1
-        }
-        infected_pool_4<- infected_persons[infected_persons %in% pool_4]
-        if (length(infected_pool_4) != 0){
-          p_nodes[pool_4] <- 1
-          q_nodes[pool_4] <- 1
-        }
-        infected_pool_5 <- infected_persons[infected_persons %in% pool_5]
-        if (length(infected_pool_5) != 0){
-          p_nodes[pool_5] <- 1
-          q_nodes[pool_5] <- 1
-        }
-        infected_pool_6 <- infected_persons[infected_persons %in% pool_6]
-        if (length(infected_pool_6) != 0){
-          p_nodes[pool_6] <- 1
-          q_nodes[pool_6] <- 1
-        }
-        infected_pool_7 <- infected_persons[infected_persons %in% pool_7]
-        if (length(infected_pool_7) != 0){
-          p_nodes[pool_7] <- 1
-          q_nodes[pool_7] <- 1
-        }
-        infected_pool_8 <- infected_persons[infected_persons %in% pool_8]
-        if (length(infected_pool_8) != 0){
-          p_nodes[pool_8] <- 1
-          q_nodes[pool_8] <- 1
-        }
-        infected_pool_9 <- infected_persons[infected_persons %in% pool_9]
-        if (length(infected_pool_9) != 0){
-          p_nodes[pool_9] <- 1
-          q_nodes[pool_9] <- 1
-        }
-        infected_pool_10 <- infected_persons[infected_persons %in% pool_10]
-        if (length(infected_pool_10) != 0){
-          p_nodes[pool_10] <- 1
-          q_nodes[pool_10] <- 1
-        }
-      } else if (length(pooled_positive) == 0){
-        infected_pool_1 <- infected_persons[infected_persons %in% pool_1]
-        if (length(infected_pool_1) != 0){
-          p_nodes[pool_1] <- 1
-          q_nodes[pool_1] <- 1
-        }
-        infected_pool_2 <- infected_persons[infected_persons %in% pool_2]
-        if (length(infected_pool_2) != 0){
-          p_nodes[pool_2] <- 1
-          q_nodes[pool_2] <- 1
-        }
-        infected_pool_3 <- infected_persons[infected_persons %in% pool_3]
-        if (length(infected_pool_3) != 0){
-          p_nodes[pool_3] <- 1
-          q_nodes[pool_3] <- 1
-        }
-        infected_pool_4 <- infected_persons[infected_persons %in% pool_4]
-        if (length(infected_pool_4) != 0){
-          p_nodes[pool_4] <- 1
-          q_nodes[pool_4] <- 1
-        }
-        infected_pool_5 <- infected_persons[infected_persons %in% pool_5]
-        if (length(infected_pool_5) != 0){
-          p_nodes[pool_5] <- 1
-          q_nodes[pool_5] <- 1
-        }
-        infected_pool_6 <- infected_persons[infected_persons %in% pool_6]
-        if (length(infected_pool_6) != 0){
-          p_nodes[pool_6] <- 1
-          q_nodes[pool_6] <- 1
-        }
-        infected_pool_7 <- infected_persons[infected_persons %in% pool_7]
-        if (length(infected_pool_7) != 0){
-          p_nodes[pool_7] <- 1
-          q_nodes[pool_7] <- 1
-        }
-        infected_pool_8 <- infected_persons[infected_persons %in% pool_8]
-        if (length(infected_pool_8) != 0){
-          p_nodes[pool_8] <- 1
-          q_nodes[pool_8] <- 1
-        }
-        infected_pool_9 <- infected_persons[infected_persons %in% pool_9]
-        if (length(infected_pool_9) != 0){
-          p_nodes[pool_9] <- 1
-          q_nodes[pool_9] <- 1
-        }
-        infected_pool_10 <- infected_persons[infected_persons %in% pool_10]
-        if (length(infected_pool_10) != 0){
-          p_nodes[pool_10] <- 1
-          q_nodes[pool_10] <- 1
-        }
-        infected_pool_11 <- infected_persons[infected_persons %in% pool_11]
-        if (length(infected_pool_11) != 0){
-          p_nodes[pool_11] <- 1
-          q_nodes[pool_11] <- 1
-        }
-        infected_pool_12 <- infected_persons[infected_persons %in% pool_12]
-        if (length(infected_pool_12) != 0){
-          p_nodes[pool_12] <- 1
-          q_nodes[pool_12] <- 1
-        }
-        infected_pool_13 <- infected_persons[infected_persons %in% pool_13]
-        if (length(infected_pool_13) != 0){
-          p_nodes[pool_13] <- 1
-          q_nodes[pool_13] <- 1
-        }
-        infected_pool_14 <- infected_persons[infected_persons %in% pool_14]
-        if (length(infected_pool_14) != 0){
-          p_nodes[pool_14] <- 1
-          q_nodes[pool_14] <- 1
-        }
-        infected_pool_15 <- infected_persons[infected_persons %in% pool_15]
-        if (length(infected_pool_15) != 0){
-          p_nodes[pool_15] <- 1
-          q_nodes[pool_15] <- 1
-        }
-        infected_pool_16 <- infected_persons[infected_persons %in% pool_16]
-        if (length(infected_pool_16) != 0){
-          p_nodes[pool_16] <- 1
-          q_nodes[pool_16] <- 1
-        }
-        infected_pool_17 <- infected_persons[infected_persons %in% pool_17]
-        if (length(infected_pool_17) != 0){
-          p_nodes[pool_17] <- 1
-          q_nodes[pool_17] <- 1
-        }
-        infected_pool_18 <- infected_persons[infected_persons %in% pool_18]
-        if (length(infected_pool_18) != 0){
-          p_nodes[pool_18] <- 1
-          q_nodes[pool_18] <- 1
-        }
-        infected_pool_19 <- infected_persons[infected_persons %in% pool_19]
-        if (length(infected_pool_19) != 0){
-          p_nodes[pool_19] <- 1
-          q_nodes[pool_19] <- 1
-        }
-        infected_pool_20 <- infected_persons[infected_persons %in% pool_20]
-        if (length(infected_pool_20) != 0){
-          p_nodes[pool_20] <- 1
-          q_nodes[pool_20] <- 1
+       ##For those without symptoms going in for testing
+      for (person in 1:length(g_name)){
+        if (runif(1,0,1) < proportion_of_individuals_with_symptoms){
+          other_individuals_with_symptom[person] <- g_name[person]
+        } else{
+          other_individuals_with_symptom[person] <- 0
         }
       }
+       
+       other_individuals_with_symptoms <- other_individuals_with_symptom[other_individuals_with_symptom != 0]
       
+      ##removing non-compliers
+      if (length(non_compliers)>0){
+      infected_individual <- infected_indivi[infected_indivi %ni% non_compliers]
+      other_individuals_with_symptoms_compliers <-other_individuals_with_symptoms[other_individuals_with_symptoms %ni% non_compliers]
+      }else {
+        infected_individual <-infected_indivi
+        other_individuals_with_symptoms_compliers <- other_individuals_with_symptoms
+      }
+      ##considering the false negatives
+      individuals_wrong_x <-rep(0,length(all))
+      for (i in 1:length(all))
+        if (runif(1, 0, 1) < prob_false_neg){
+          individuals_wrong_x[i] <- all[i]
+        }else{
+          individuals_wrong_x[i] <- 0
+        }
+      individuals_wrong <- individuals_wrong_x[individuals_wrong_x != 0]
+
       
+      all_individuals_with_symptoms <-c(infected_individual, other_individuals_with_symptoms_compliers)
+     #adding in the probability of individuals delaying to the next day for testing
+      prob_choose_x <- rep(0,length(all_individuals_with_symptoms))
+      for (i in 1:length(all_individuals_with_symptoms))
+        if (runif(1, 0, 1) > delay_prob){
+          prob_choose_x[i] <- all_individuals_with_symptoms[i]
+        } else{
+          prob_choose_x[i] <- 0
+        }
+      prob_choose<- prob_choose_x[prob_choose_x != 0]
+     #Deciding on if the number of individuals going in for testing is greater than the number of tests available who the tests would go to
+      if (length(prob_choose) > tests) {
+        potential_positive <- sample(prob_choose, tests, replace=F)
+      } else {
+        potential_positive <- prob_choose
+      }
+    #Those testing positive are those who are actually infected (as no false positives in the model) and removing individuals who get false negative results
+    those_positive_with_those_in_sample<-potential_positive[potential_positive %in% infected_persons ]
       
-      #this is where you can add in an element of false negatives
-      #print(length(names_of))
-      #print (infected_persons)
-      #print(potential_positive)
-      #can add in the false positives
-      #`%!in%` <- Negate(`%in%`)
-      #non-infected <- infected_persons[infected_persons %!in% testing_people]
-      # false positive <- sample(non-infected)
-      #positive_tests <- names_of
-      #this is where you can add in a dimension of compliance where not all those who are testing positive with isolation.
+     accurate_positive <- those_positive_with_those_in_sample[those_positive_with_those_in_sample %ni% individuals_wrong]
+     
+     positive_testing_wrong <-prob_choose[prob_choose %in% individuals_wrong]
+     
+     #working out how many tests are spare for the random individual sampling
+     spare_tests <- tests - length(potential_positive)
+     non_isol <- g_name[q_nodes == 0]
+     those_who_chose <- non_isol[non_isol %ni% non_compliers]
+     testing_people<-c()
+     #choosing which individuals from the non-isolating population to be able to use the spare tests
+     if (spare_tests > 0){
+       testing_people <- sample(those_who_chose, spare_tests, replace=F)
+     } else{
+       testing_people<-0
+     }
+     potential_positive <- infected_persons[infected_persons %in% testing_people]
+     positive_testing_wrong <-c()
+     for (i in 1:length(potential_positive))
+       if (runif(1, 0, 1) < prob_false_neg){
+         positive_testing_wrong[i] <- potential_positive[i]
+       }
+     names_of <- potential_positive[potential_positive %ni% positive_testing_wrong]
+     #Isolating the individuals testing positive both from the symptomatic testing and the random individual one using the spare tests 
+     q_nodes[names_of] <- 1
+      q_nodes[accurate_positive] <- 1
       z_nodes[infected_persons] <- 1
+      
+      f_nodes[positive_testing_wrong]<- 1
       routine <- g_name[z_nodes == 1]
-      pos_peeps <- g_name[q_nodes == 1]
-      #print(length(pos_peeps))
-      #print(pos_peeps)
+
+      total_inf <- length(infected_persons)
+      report[time_step] <- total_inf
+      #non_pos_peeps <- g_name[q_nodes == 0]
+      #pos_peeps <- g_name[g_name %ni% non_pos_peeps]
+      pos_peeps <-g_name[q_nodes == 1]
       
+      for (i in 1:length(g_name))
+        if (q_nodes[i] == 1 & z_nodes[i] == 0 ){
+            w_nodes_info[i] <- w_nodes_info[i] + 1
+          }
+        
       
-      #if (g_name[q_nodes == 1]){
-      # g_name[q_nodes_info] <- g_name[q_nodes_info] + 1
-      #}
-      
-      # if(length(names_of >0)){
-      #   positive[time_step,1:length(names_of)] <- names_of  
-      # }
+      if(length(names_of >0)){
+        positive[time_step,1:length(names_of)] <- names_of  
+      }
+    }
+    #individuals who have isolated for 14 days leave isolation and aren't eligible for further testing
+    for (i in 1:length(g_name))
+      if (q_nodes[i] == 1){
+        q_nodes_info[i] <- q_nodes_info[i] + 1
+        if (q_nodes_info[i] >= 14){
+          q_nodes[i] <- 2
+        }
+      } else {
+        q_nodes_info[i] <- q_nodes_info[i]
+      }
+
+    
+    # metric of when the number of new infections surpasses a certain threshold
+    numnewinfectious <- length(newinfectious)
+    if (numnewinfectious >5){
+      over_point <-over_point + 1 
+    }
+    if (numnewinfectious >10){
+      over_point_1 <-over_point_1 + 1 
     }
     # store new cases of infectiousness
-    numnewinfectious <- length(newinfectious)
     if (numnewinfectious>0) {
       # Update results
       ord <- match(newinfectious,i_nodes_info[,1])
@@ -653,7 +485,8 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       results[results[,1]%in%newremoved,4] <- time_step
     }
     
-    ## spread infection - 
+    ## spread infection
+    
     if (time_step < 15){
       e_nodes_info <- spread_wrapper_2(i_nodes_info,s_nodes,v_nodes,e_nodes_info, pos_peeps, direct_VE)
       s_nodes[e_nodes_info[,1]] <- 0
@@ -665,6 +498,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       e_nodes[e_nodes_info[,1]] <- 1
       order_infected_2 <- c(order_infected,e_nodes_info[,1])
     }
+  
     
     # infect from source
     rate_from_source <- max((start_day + time_step)*from_source + base_rate, 0)
@@ -693,21 +527,76 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   results$inTrial <- results$InfectedNode%in%trial_participants
   results$vaccinated <- results$InfectedNode%in%vaccinees
   results$RecruitmentDay <- recruitment_times[match(results$InfectedNode,trial_participants)]
-  #print(length(pos_peeps))
+  resu <- as.data.frame(cbind(length(routine), length(pos_peeps)))
+  peaks <- rep(0, 500) 
+  
+  for (i in 11:488){
+    if (report[i]>report[i+1]){
+      if (report[i] >report[i+2]){
+        if (report[i] > report[i+3]){
+          if (report[i] > report[i+4]){
+            if (report[i] > report[i+5]){
+              if (report[i] > report[i+6]){
+                if (report[i] > report[i+7]){
+                  if (report[i] > report[i+8]){
+                    if (report[i] > report[i+9]){
+                      if (report[i] > report[i+10]){
+                        if (report[i] > report[i-10]){
+                          if (report[i] > report[i-9]){
+                            if (report[i] > report[i-8]){
+                              if (report[i] > report[i-7]){
+                                if (report[i] > report[i-6]){
+                                  if (report[i] > report[i-5]){
+                                    if (report[i] > report[i-4]){
+                                      if (report[i] > report[i-3]){
+                                        if (report[i] > report[i-2]){
+                                          if (report[i] > report[i-1]){
+                                            peaks[i] <- report[i]
+                                            
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }else{
+      peaks[i] <- 0
+    }
+    
+  } 
+
+  not_infect <-sum(report == 0)
+  not_peaks <- sum(peaks == 0)
   
   resu <- as.data.frame(cbind(length(routine), length(pos_peeps)))
   infections <- length(routine)
-  isolations <- length(pos_peeps)
+  isolations <- sum(q_nodes_info)
+  unneccesary_isolations<-sum(w_nodes_info)
+  peak <-max(report)
+  infection_period<- 500 - not_infect
+  dif_peaks <- 500 - not_peaks
+  
+  
+  
   
   
   return(list(results,length(cluster_people),recruitment_times,length(vaccinees),
               length(trial_participants),vaccinees,trial_participants,order_infected,
               vaccine_incubation_times+recruitment_times[trial_participants%in%vaccinees],
-              positive, infections, isolations))
+              peak, infections, isolations, infection_period, dif_peaks, over_point, over_point_1, unneccesary_isolations))
   
 }
-
-
-
-
 

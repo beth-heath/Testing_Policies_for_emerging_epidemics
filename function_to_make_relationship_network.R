@@ -1,3 +1,5 @@
+`%ni%` <- Negate(`%in%`)
+set.seed(123)
 #loading in the data
 occupancy_data <- read_xls('/Users/bethanyheath/Downloads/Dat.xls',sheet=2)
 #Naming the columns after the variables
@@ -130,13 +132,13 @@ par(mar=c(1,1,1,1))
 plot(induced.subgraph(new_g,1:pts),layout=save_layout,
      vertex.label=NA,vertex.size=10,vertex.color=c('white',"#660066","#CC99FF")[demographic_index[1:pts]])
 legend('topleft',legend=c('<19','19-65','>65'),pt.cex=2,col='black',pch=21, pt.bg=c('white',"#660066","#CC99FF"),bty='n')
-dev.off()
+
 #Plotting graph of the connections
-plot.igraph(new_g,vertex.label=NA,vertex.size=1,layout=save_layout)
+#plot.igraph(new_g,vertex.label=NA,vertex.size=1,layout=save_layout)
 
 #Looking at the size of the clusters
 cluster_sizes <- sapply(V(new_g),function(x)ego_size(new_g,order=2,nodes=x))
-hist(cluster_sizes,main='',xlab='Cluster size')
+#hist(cluster_sizes,main='',xlab='Cluster size')
 
 #looking at the degree distribution
 degreedistribution <- degree.distribution(new_g)*length(E(new_g))
@@ -161,42 +163,30 @@ random_g <- sample_gnp(length(V(new_g)), 10/length(V(new_g)))
 #creates a list of all the vertices that they are attached to as a result of these random interactions
 random_list <<- lapply(V(random_g),function(x) {cs <- as.vector(unlist(ego(random_g,order=1,nodes=x))); cs[cs!=x]})
 
-## Changes going to add to Rob's model - adding in children going to class, adding in random connections to simulate social connection and adding in big events
 
 
                     
 
-
 ## adding in random connections to simulate social connections
-for(i in 1:1000) {
-  first_person <- sample(V(new_g),1)
-  first_hh <- V(new_g)$hh[first_person]
-  second_person <- sample(V(new_g)[V(new_g)$hh!=first_hh&!V(new_g)$name%in%ego(new_g,order=1,nodes=first_person)[[1]]],1)
-  social_g <- add_edges(new_g,edges=c(first_person,second_person))
+social_g <<- new_g
+social_g <- add_edges(social_g, edges=c(1,2))
+
+for (i in 1:1650){
+  listing_one <-sample(V(social_g),11000, replace = TRUE)
+  listing_two <- sample(V(social_g), 11000, replace = TRUE)
+  one_pair <-unlist(unname(as.list(listing_one[i])))
+  two_pair<-unlist(unname(as.list(listing_two[i])))
+  social_g <-add_edges(social_g, edges = c(one_pair, two_pair))
 }
-# actually gonna have to move this up so that it is above as will want contacts of contacts to do with this. 
+
 
 social_list <<- lapply(V(social_g),function(x) {cs <- as.vector(unlist(ego(social_g,order=1,nodes=x))); cs[cs!=x]})
 
-## simulating big event 1
-
-# attendees <- sample(V(social_g), 100)
-# for (j in 2:length(attendees))
-#   for (k in 1:(j-1)){
-#     big_event_g <- add_edges(social_g, edges=c(attendees[j], attendees[k]))
-#   }
-
-
-  ## simulating big event 2
-  
-# attendees_2 <- sample(V(big_event_g), 50)
-# for (j in 2:length(attendees_2))
-#   for (k in 1:(j-1)){
-#     big_event_2_g <- add_edges(big_event_g, edges=c(attendees_2[j], attendees_2[k]))
-#   }
   
   
-  
+plot(induced.subgraph(social_g,1:pts),layout=save_layout,
+     vertex.label=NA,vertex.size=10,vertex.color=c('white',"#660066","#CC99FF")[demographic_index[1:pts]])
+legend('topleft',legend=c('<19','19-65','>65'),pt.cex=2,col='black',pch=21, pt.bg=c('white',"#660066","#CC99FF"),bty='n')  
   
   
 
