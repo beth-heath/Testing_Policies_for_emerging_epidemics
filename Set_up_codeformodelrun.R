@@ -26,7 +26,7 @@ library(rBeta2009)
 
 ## functions #######################################################
 
-source('random_individual_testing_function.R')
+source('Random_pooled_5_tests_revamped.R')
 
 ref_recruit_day <<- 30
 eval_day <<- 25
@@ -42,8 +42,8 @@ covid_spread_wrapper <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,isola
   ##!! a subset of i_nodes are nonsymptomatic and therefore continue to infect contacts. these should be a fixed list, not sampled randomly every time.
   current_infectious <- c(i_nodes_info[,1],e_nodes_info[e_nodes_info[,2]>=e_nodes_info[,3],1])
   available_infectors <- current_infectious[current_infectious %ni% isolation_individuals]
-  non_isolating <- current_infectious %ni% isolation_individuals
-  available_infectors <- current_infectious[non_isolating]
+  #non_isolating <- current_infectious %ni% isolation_individuals
+  #available_infectors <- current_infectious[non_isolating]
   if(length(available_infectors)>0){
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,available_infectors,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=nonrandom_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
@@ -66,6 +66,7 @@ covid_spread_wrapper_2 <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,iso
   # e infects house and work and anyone - only enodes infected one day ago or more, and only enodes with one day left incubating
   ##!! a subset of i_nodes are nonsymptomatic and therefore continue to infect contacts. these should be a fixed list, not sampled randomly every time.
   current_infectious <- c(i_nodes_info[,1],e_nodes_info[e_nodes_info[,2]>=e_nodes_info[,3],1])
+  available_infectors <- current_infectious[current_infectious %ni% isolation_individuals]
   if(length(current_infectious)>0){
  #   e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,current_infectious,direct_VE,incperiod_shape,incperiod_rate,susc_list=contact_list,beta_scalar=nonrandom_scalar)
 #    s_nodes[e_nodes_info[,1]] <- 0
@@ -160,25 +161,26 @@ set_variables_from_gamma_distributions()
 #### Additional code ####
 nIter <- 20
 e_order <- list()
-infected_1<-infected_1<-length_1<-no_peaks_1<- peak_1<-isolated_1<-unneccesary_infections1<-threshold_11 <-threshold_21 <- matrix(nrow = 1, ncol=1)
-sdinfected_1<-sdinfected_1<-sdlength_1<-sdno_peaks_1<- sdpeak_1<-sdisolated_1<-sdunneccesary_infections1<-sdthreshold_11 <-sdthreshold_21 <-matrix(nrow =1, ncol=1)
+infected_1<-infected_1<-length_1<-no_peaks_1<- peak_1<-isolated_1<-unneccesary_infections1<-threshold_11 <-threshold_21 <- matrix(nrow = 11, ncol=6)
+sdinfected_1<-sdinfected_1<-sdlength_1<-sdno_peaks_1<- sdpeak_1<-sdisolated_1<-sdunneccesary_infections1<-sdthreshold_11 <-sdthreshold_21 <-matrix(nrow =11, ncol=6)
 #data_collected = matrix (nrow = length(nIter), ncol = 2)
 infected_2<- isolated_2<- peak_2<-length_2<-no_peaks_2 <-unneccesary_infections <- threshold_2<-threshold_1<-c()
 #profvis(
 
-delay_prob_range <-c(1)
-other_symps_range <-c(5)
+delay_prob_range <-c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+other_symps_range <-c(0, 0.02, 0.04, 0.06, 0.08, 0.10)
 
 for (i in delay_prob_range){
  for (j in other_symps_range){
    for (iter in 1:nIter){
-     observed <<- 0.3
+     #observed <<- delay_prob_range
+     observed <<- i
 # select random person to start
      first_infected <- sample(g_name, 20)
      inf_period <- rgamma(length(first_infected),shape=infperiod_shape,rate=infperiod_rate)
      netwk <- simulate_contact_network(first_infected,start_day=iter,from_source=0,cluster_flag=0,individual_recruitment_times=T,spread_wrapper=covid_spread_wrapper,
-                                       prob_false_neg = 0.279, tests=20,
-                                       non_compliance_prob =0, 
+                                       prob_false_neg = 0.279, tests=5,
+                                       non_compliance_prob =0, pools_every_time=3, pool_size=12
 
 
      )

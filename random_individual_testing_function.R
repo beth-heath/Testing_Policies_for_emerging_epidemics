@@ -327,7 +327,10 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       #coding the individuals who are infected, those identified in the testing scheme and isolated
       z_nodes[infected_persons] <- 1
       routine <- g_name[z_nodes == 1]
+      if (time_step >= 14){
       q_nodes[names_of] <- 1
+      }
+      
       pos_peeps <- g_name[q_nodes == 1]
       ##metric of total infections
       total_inf <- length(infected_persons)

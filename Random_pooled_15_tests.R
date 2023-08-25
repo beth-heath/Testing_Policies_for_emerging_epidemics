@@ -504,57 +504,73 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       infected_pool_1 <- infected_persons[infected_persons %in% pool_1]
       if (length(infected_pool_1) != 0){
         if (runif(1,0,1) > prob_false_neg){
+          if (time_step > 14){
           p_nodes[pool_1] <- 1
           q_nodes[pool_1] <- 1
+          }
         }
       }
       infected_pool_2 <- infected_persons[infected_persons %in% pool_2]
       if (length(infected_pool_2) != 0){
         if (runif(1,0,1) > prob_false_neg){
+          if (time_step > 14){
           p_nodes[pool_2] <- 1
           q_nodes[pool_2] <- 1
+          }
         }
       }
       infected_pool_3 <- infected_persons[infected_persons %in% pool_3]
       if (length(infected_pool_3) != 0){
         if (runif(1,0,1) > prob_false_neg){
+          if (time_step > 14){
           p_nodes[pool_3] <- 1
           q_nodes[pool_3] <- 1
+          }
         }
       }
       infected_pool_4 <- infected_persons[infected_persons %in% pool_4]
       if (length(infected_pool_4) != 0){
         if (runif(1,0,1) > prob_false_neg){
+          if (time_step > 14){
           p_nodes[pool_4] <- 1
           q_nodes[pool_4] <- 1
+          }
         }
       }
       infected_pool_5 <- infected_persons[infected_persons %in% pool_5]
       if (length(infected_pool_5) != 0){
         if (runif(1,0,1) > prob_false_neg){
+          if (time_step > 14){
           p_nodes[pool_5] <- 1
           q_nodes[pool_5] <- 1
+          }
         }
       }
        infected_pool_6 <- infected_persons[infected_persons %in% pool_6]
        if (length(infected_pool_6) != 0){
          if (runif(1,0,1) > prob_false_neg){
+           if (time_step > 14){
            p_nodes[pool_6] <- 1
            q_nodes[pool_6] <- 1
+           }
          }
        }
        infected_pool_7 <- infected_persons[infected_persons %in% pool_7]
        if (length(infected_pool_7) != 0){
          if (runif(1,0,1) > prob_false_neg){
+           if (time_step > 14){
            p_nodes[pool_7] <- 1
            q_nodes[pool_7] <- 1
+           }
          }
        }
        infected_pool_8 <- infected_persons[infected_persons %in% pool_8]
        if (length(infected_pool_8) != 0){
          if (runif(1,0,1) > prob_false_neg){
+           if (time_step > 14){
            p_nodes[pool_8] <- 1
            q_nodes[pool_8] <- 1
+           }
          }
        }
 
@@ -619,8 +635,10 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_9 <- infected_persons[infected_persons %in% pool_9]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
       }else if ((tests-length(pooled_positive) - pools_every_time) == 2){
@@ -638,14 +656,18 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_5 <- infected_persons[infected_persons %in% pool_5]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
       }else if ((tests-length(pooled_positive)- pools_every_time)==3){
@@ -664,20 +686,26 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_6 <- infected_persons[infected_persons %in% pool_6]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
         if (length(infected_pool_11) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_11] <- 1
             q_nodes[pool_11] <- 1
+            }
           }
         }
       }else if ((tests-length(pooled_positive)- pools_every_time)==4){
@@ -697,26 +725,34 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_7 <- infected_persons[infected_persons %in% pool_7]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
         if (length(infected_pool_11) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_11] <- 1
             q_nodes[pool_11] <- 1
+            }
           }
         }
         if (length(infected_pool_12) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_12] <- 1
             q_nodes[pool_12] <- 1
+            }
           }
         }
       }else if ((tests-length(pooled_positive)- pools_every_time)==5){
@@ -737,32 +773,42 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_8 <- infected_persons[infected_persons %in% pool_8]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
         if (length(infected_pool_11) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_11] <- 1
             q_nodes[pool_11] <- 1
+            }
           }
         }
         if (length(infected_pool_12) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_12] <- 1
             q_nodes[pool_12] <- 1
+            }
           }
         }
         if (length(infected_pool_13) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_13] <- 1
             q_nodes[pool_13] <- 1
+            }
           }
         }
       } else if ((tests-length(pooled_positive)- pools_every_time)==6){
@@ -838,44 +884,58 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_10 <- infected_persons[infected_persons %in% pool_10]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
         if (length(infected_pool_11) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_11] <- 1
             q_nodes[pool_11] <- 1
+            }
           }
         }
         if (length(infected_pool_12) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_12] <- 1
             q_nodes[pool_12] <- 1
+            }
           }
         }
         if (length(infected_pool_13) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_13] <- 1
             q_nodes[pool_13] <- 1
+            }
           }
         }
         if (length(infected_pool_14) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_14] <- 1
             q_nodes[pool_14] <- 1
+            }
           }
         }
         if (length(infected_pool_15) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_15] <- 1
             q_nodes[pool_15] <- 1
+            }
           }
         }
       } else if ((tests-length(pooled_positive) - pools_every_time)==8){
@@ -899,50 +959,66 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
         infected_pool_11 <- infected_persons[infected_persons %in% pool_11]
         if (length(infected_pool_9) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_9] <- 1
             q_nodes[pool_9] <- 1
+            }
           }
         }
         if (length(infected_pool_10) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_10] <- 1
             q_nodes[pool_10] <- 1
+            }
           }
         }
         if (length(infected_pool_11) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_11] <- 1
             q_nodes[pool_11] <- 1
+            }
           }
         }
         if (length(infected_pool_12) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_12] <- 1
             q_nodes[pool_12] <- 1
+            }
           }
         }
         if (length(infected_pool_13) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_13] <- 1
             q_nodes[pool_13] <- 1
+            }
           }
         }
         if (length(infected_pool_14) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_14] <- 1
             q_nodes[pool_14] <- 1
+            }
           }
         }
         if (length(infected_pool_15) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_15] <- 1
             q_nodes[pool_15] <- 1
+            }
           }
         }
         if (length(infected_pool_16) != 0){
           if (runif(1,0,1) > prob_false_neg){
+            if (time_step > 14){
             p_nodes[pool_16] <- 1
             q_nodes[pool_16] <- 1
+            }
           }
         }
       } else if ((tests-length(pooled_positive) - pools_every_time)==9){

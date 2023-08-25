@@ -360,6 +360,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
        other_individuals_with_symptom <- rep(0,length(g_name))
       
        ##For those without symptoms going in for testing
+       
       for (person in 1:length(g_name)){
         if (runif(1,0,1) < proportion_of_individuals_with_symptoms){
           other_individuals_with_symptom[person] <- g_name[person]
@@ -431,8 +432,11 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
        }
      names_of <- potential_positive[potential_positive %ni% positive_testing_wrong]
      #Isolating the individuals testing positive both from the symptomatic testing and the random individual one using the spare tests 
-     q_nodes[names_of] <- 1
+      if (time_step > 14){
+      q_nodes[names_of] <- 1
       q_nodes[accurate_positive] <- 1
+      }
+      
       z_nodes[infected_persons] <- 1
       
       f_nodes[positive_testing_wrong]<- 1
