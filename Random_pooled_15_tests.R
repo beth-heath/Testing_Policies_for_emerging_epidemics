@@ -211,6 +211,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   a_nodes<-rep(0,length(g_name))
   q_nodes_info <- rep(0, length(g_name))
   w_nodes_info <-rep(0, length(g_name))
+  Those_passing_Fourteen <- 0
   
   
   # generate info for index case
@@ -370,127 +371,127 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       non_isolating <- non_isol[non_isol %ni% non_compliers]
       #
       if (length(non_isolating) > pool_size){
-        pool_1 <- sample(non_isolating, pool_size, replace=T)
+        pool_1 <- sample(non_isolating, pool_size, replace=F)
         g_name_1 <- non_isolating[non_isolating %ni% pool_1]
       }
       if (length(g_name_1) > pool_size){
-        pool_2 <- sample(g_name_1, pool_size, replace=T)
+        pool_2 <- sample(g_name_1, pool_size, replace=F)
         g_name_2 <- g_name_1[g_name_1 %ni% pool_2]
       }
       if (length(g_name_2) > pool_size){
-        pool_3 <- sample(g_name_2, pool_size, replace=T)
+        pool_3 <- sample(g_name_2, pool_size, replace=F)
         g_name_3 <- g_name_2[g_name_2 %ni% pool_3]
       }
       if (length(g_name_3) > pool_size){
-        pool_4 <- sample(g_name_3, pool_size, replace=T)
+        pool_4 <- sample(g_name_3, pool_size, replace=F)
         g_name_4 <- g_name_3[g_name_3 %ni% pool_4]
       }
       if (length(g_name_4) > pool_size){
-        pool_5 <- sample(g_name_4, pool_size, replace=T)
+        pool_5 <- sample(g_name_4, pool_size, replace=F)
         g_name_5 <- g_name_4[g_name_4 %ni% pool_5]
       }
       if (length(g_name_5) > pool_size){
-        pool_6 <- sample(g_name_5, pool_size, replace=T)
+        pool_6 <- sample(g_name_5, pool_size, replace=F)
         g_name_6 <- g_name_5[g_name_5 %ni% pool_6]
       }
       if (length(g_name_6) > pool_size){
-        pool_7 <- sample(g_name_6, pool_size, replace=T)
+        pool_7 <- sample(g_name_6, pool_size, replace=F)
         g_name_7 <- g_name_6[g_name_6 %ni% pool_7]
       }
       if (length(g_name_7) > pool_size){
-        pool_8 <- sample(g_name_7, pool_size, replace=T)
+        pool_8 <- sample(g_name_7, pool_size, replace=F)
         g_name_8 <- g_name_7[g_name_7 %ni% pool_8]
       }
       if (length(g_name_8) > pool_size){
-        pool_9 <- sample(g_name_8, pool_size, replace=T)
+        pool_9 <- sample(g_name_8, pool_size, replace=F)
         g_name_9 <- g_name_8[g_name_8 %ni% pool_9]
       }
       if (length(g_name_9) > pool_size){
-        pool_10 <- sample(g_name_9, pool_size, replace=T)
+        pool_10 <- sample(g_name_9, pool_size, replace=F)
         g_name_10 <- g_name_9[g_name_9 %ni% pool_10]
       }
       if (length(g_name_9) > pool_size){
-        pool_10 <- sample(g_name_9, pool_size, replace=T)
+        pool_10 <- sample(g_name_9, pool_size, replace=F)
         g_name_10 <- g_name_9[g_name_9 %ni% pool_10]
       }
       if (length(g_name_10) > pool_size){
-        pool_11 <- sample(g_name_10, pool_size, replace=T)
+        pool_11 <- sample(g_name_10, pool_size, replace=F)
         g_name_11 <- g_name_10[g_name_10 %ni% pool_11]
       }
       if (length(g_name_11) > pool_size){
-        pool_12 <- sample(g_name_11, pool_size, replace=T)
+        pool_12 <- sample(g_name_11, pool_size, replace=F)
         g_name_12 <- g_name_11[g_name_11 %ni% pool_12]
       }
       if (length(g_name_12) > pool_size){
-        pool_13 <- sample(g_name_12, pool_size, replace=T)
+        pool_13 <- sample(g_name_12, pool_size, replace=F)
         g_name_13 <- g_name_12[g_name_12 %ni% pool_13]
       }
       if (length(g_name_13) > pool_size){
-        pool_14 <- sample(g_name_13, pool_size, replace=T)
+        pool_14 <- sample(g_name_13, pool_size, replace=F)
         g_name_14 <- g_name_13[g_name_13 %ni% pool_14]
       }
       if (length(g_name_14) > pool_size){
-        pool_15 <- sample(g_name_14, pool_size, replace=T)
+        pool_15 <- sample(g_name_14, pool_size, replace=F)
         g_name_15 <- g_name_14[g_name_14 %ni% pool_15]
       }
       if (length(g_name_15) > pool_size){
-        pool_16  <- sample(g_name_15, pool_size, replace=T)
+        pool_16  <- sample(g_name_15, pool_size, replace=F)
         g_name_16 <- g_name_15[g_name_15 %ni% pool_16]
       }
       if (length(g_name_16) > pool_size){
-        pool_17 <- sample(g_name_16, pool_size, replace=T)
+        pool_17 <- sample(g_name_16, pool_size, replace=F)
         g_name_17 <- g_name_16[g_name_16 %ni% pool_17]
       }
       if (length(g_name_17) > pool_size){
-        pool_18 <- sample(g_name_17, pool_size, replace=T)
+        pool_18 <- sample(g_name_17, pool_size, replace=F)
         g_name_18 <- g_name_17[g_name_17 %ni% pool_18]
       }
       if (length(g_name_18) > pool_size){
-        pool_19 <- sample(g_name_18, pool_size, replace=T)
+        pool_19 <- sample(g_name_18, pool_size, replace=F)
         g_name_19 <- g_name_18[g_name_18 %ni% pool_19]
       }
       if (length(g_name_19) > pool_size){
-        pool_20 <- sample(g_name_19, pool_size, replace=T)
+        pool_20 <- sample(g_name_19, pool_size, replace=F)
         g_name_20 <- g_name_19[g_name_19 %ni% pool_20]
       }
       if (length(g_name_20) > pool_size){
-        pool_21 <- sample(g_name_20, pool_size, replace=T)
+        pool_21 <- sample(g_name_20, pool_size, replace=F)
         g_name_21 <- g_name_20[g_name_20 %ni% pool_21]
       }
       if (length(g_name_21) > pool_size){
-        pool_22 <- sample(g_name_21, pool_size, replace=T)
+        pool_22 <- sample(g_name_21, pool_size, replace=F)
         g_name_22 <- g_name_21[g_name_21 %ni% pool_22]
       }
       if (length(g_name_22) > pool_size){
-        pool_23 <- sample(g_name_22, pool_size, replace=T)
+        pool_23 <- sample(g_name_22, pool_size, replace=F)
         g_name_23 <- g_name_22[g_name_22 %ni% pool_23]
       }
       if (length(g_name_23) > pool_size){
-        pool_24 <- sample(g_name_23, pool_size, replace=T)
+        pool_24 <- sample(g_name_23, pool_size, replace=F)
         g_name_24 <- g_name_23[g_name_23 %ni% pool_24]
       }
       if (length(g_name_24) > pool_size){
-        pool_25 <- sample(g_name_24, pool_size, replace=T)
+        pool_25 <- sample(g_name_24, pool_size, replace=F)
         g_name_25 <- g_name_24[g_name_24 %ni% pool_25]
       }
       if (length(g_name_25) > pool_size){
-        pool_26 <- sample(g_name_25, pool_size, replace=T)
+        pool_26 <- sample(g_name_25, pool_size, replace=F)
         g_name_26 <- g_name_25[g_name_25 %ni% pool_26]
       }
       if (length(g_name_26) > pool_size){
-        pool_27 <- sample(g_name_26, pool_size, replace=T)
+        pool_27 <- sample(g_name_26, pool_size, replace=F)
         g_name_27 <- g_name_26[g_name_26 %ni% pool_27]
       }
       if (length(g_name_27) > pool_size){
-        pool_28 <- sample(g_name_27, pool_size, replace=T)
+        pool_28 <- sample(g_name_27, pool_size, replace=F)
         g_name_28 <- g_name_27[g_name_27 %ni% pool_28]
       }
       if (length(g_name_28) > pool_size){
-        pool_29 <- sample(g_name_28, pool_size, replace=T)
+        pool_29 <- sample(g_name_28, pool_size, replace=F)
         g_name_29 <- g_name_28[g_name_28 %ni% pool_29]
       }
       if (length(g_name_29) > pool_size){
-        pool_30 <- sample(g_name_29, pool_size, replace=T)
+        pool_30 <- sample(g_name_29, pool_size, replace=F)
         g_name_30 <- g_name_29[g_name_29 %ni% pool_30]
       }
       
@@ -2412,6 +2413,8 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
       for (i in 1:length(g_name))
         if (q_nodes[i] == 2 & p_nodes[i]==1){
           q_nodes[i] ==0
+          q_nodes_info[i] == 0
+          Those_passing_Fourteen = Those_passing_Fourteen + 1
         }
       
       
@@ -2537,7 +2540,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   
   resu <- as.data.frame(cbind(length(routine), length(pos_peeps)))
   infections <- length(routine)
-  isolations <- sum(q_nodes_info)
+  isolations <- sum(q_nodes_info) + 14*(Those_passing_Fourteen)
   peak <-max(report)
   infection_period<- 500 - not_infect
   dif_peaks <- 500 - not_peaks

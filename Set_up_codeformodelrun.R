@@ -26,7 +26,7 @@ library(rBeta2009)
 
 ## functions #######################################################
 
-source('Random_pooled_5_tests_revamped.R')
+source('Random_pooled_10_tests.R')
 
 ref_recruit_day <<- 30
 eval_day <<- 25
@@ -50,7 +50,7 @@ covid_spread_wrapper <- function(i_nodes_info,s_nodes,v_nodes,e_nodes_info,isola
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info,available_infectors,direct_VE,incperiod_shape,incperiod_rate,susc_list=random_list,beta_scalar=random_scalar)
     s_nodes[e_nodes_info[,1]] <- 0
   }
-  #i infects house - changing code so that only those that have tested positive - currently have that testing occurs every day
+  #i infects house - changing code so that oninfected_personsly those that have tested positive - currently have that testing occurs every day
   infected_and_isolated <- current_infectious[current_infectious %in% isolation_individuals]
   if(length(isolation_individuals)>0){
     e_nodes_info <- spread(s_nodes,v_nodes,e_nodes_info, infected_and_isolated,direct_VE,incperiod_shape,incperiod_rate,susc_list=household_list,beta_scalar=nonrandom_scalar)
@@ -159,16 +159,20 @@ set_variables_from_gamma_distributions <- function(){
 set_variables_from_gamma_distributions()
 
 #### Additional code ####
-nIter <- 20
+nIter <- 100
 e_order <- list()
-infected_1<-infected_1<-length_1<-no_peaks_1<- peak_1<-isolated_1<-unneccesary_infections1<-threshold_11 <-threshold_21 <- matrix(nrow = 11, ncol=6)
-sdinfected_1<-sdinfected_1<-sdlength_1<-sdno_peaks_1<- sdpeak_1<-sdisolated_1<-sdunneccesary_infections1<-sdthreshold_11 <-sdthreshold_21 <-matrix(nrow =11, ncol=6)
+infected_1<-infected_1<-length_1<-no_peaks_1<- peak_1<-isolated_1<-unneccesary_infections1<-threshold_11 <-threshold_21 <- matrix(nrow = 15, ncol=1)
+sdinfected_1<-sdinfected_1<-sdlength_1<-sdno_peaks_1<- sdpeak_1<-sdisolated_1<-sdunneccesary_infections1<-sdthreshold_11 <-sdthreshold_21 <-matrix(nrow =15, ncol=1)
 #data_collected = matrix (nrow = length(nIter), ncol = 2)
 infected_2<- isolated_2<- peak_2<-length_2<-no_peaks_2 <-unneccesary_infections <- threshold_2<-threshold_1<-c()
 #profvis(
 
-delay_prob_range <-c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
-other_symps_range <-c(0, 0.02, 0.04, 0.06, 0.08, 0.10)
+#delay_prob_range <-c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+
+delay_prob_range <-c(2,4,6,8,10,12,14,16,20,22, 24, 26, 28, 30, 32)
+other_symps_range <-c(1)
+
+
 
 for (i in delay_prob_range){
  for (j in other_symps_range){
@@ -179,8 +183,8 @@ for (i in delay_prob_range){
      first_infected <- sample(g_name, 20)
      inf_period <- rgamma(length(first_infected),shape=infperiod_shape,rate=infperiod_rate)
      netwk <- simulate_contact_network(first_infected,start_day=iter,from_source=0,cluster_flag=0,individual_recruitment_times=T,spread_wrapper=covid_spread_wrapper,
-                                       prob_false_neg = 0.279, tests=5,
-                                       non_compliance_prob =0, pools_every_time=3, pool_size=12
+                                       prob_false_neg = 0.279, tests=10,
+                                       non_compliance_prob =0, pools_every_time=5, pool_size=i
 
 
      )

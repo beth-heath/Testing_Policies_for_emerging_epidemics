@@ -171,7 +171,7 @@ random_list <<- lapply(V(random_g),function(x) {cs <- as.vector(unlist(ego(rando
 social_g <<- new_g
 social_g <- add_edges(social_g, edges=c(1,2))
 
-for (i in 1:1650){
+for (i in 1:1731){
   listing_one <-sample(V(social_g),11000, replace = TRUE)
   listing_two <- sample(V(social_g), 11000, replace = TRUE)
   one_pair <-unlist(unname(as.list(listing_one[i])))

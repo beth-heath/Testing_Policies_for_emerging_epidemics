@@ -210,6 +210,7 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
   a_nodes<-rep(0,length(g_name))
   q_nodes_info <- rep(0, length(g_name))
   w_nodes_info <-rep(0, length(g_name))
+  Those_passing_Fourteen <-0
   
   
   # generate info for index case
@@ -2693,6 +2694,8 @@ simulate_contact_network <- function(first_infected,individual_recruitment_times
     for (i in 1:length(g_name))
       if (q_nodes[i] == 2 & p_nodes[i]==1){
         q_nodes[i] ==0
+        q_nodes_info[i] == 0
+        Those_passing_Fourteen = Those_passing_Fourteen + 1
       }
     
     # store new cases of infectiousness
@@ -2809,7 +2812,7 @@ for (i in 11:488){
   
   resu <- as.data.frame(cbind(length(routine), length(pos_peeps)))
   infections <- length(routine)
-  isolations <- sum(q_nodes_info)
+  isolations <- sum(q_nodes_info) + 14*(Those_passing_Fourteen)
   peak <-max(report)
   infection_period<- 500 - not_infect
   dif_peaks <- 500 - not_peaks
